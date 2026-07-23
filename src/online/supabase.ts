@@ -3,8 +3,11 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 // Online mode is only available when the app is configured with a Supabase
 // project. Without these env vars the app runs in local-only mode and none of
 // the online code paths are reachable.
-const url = import.meta.env.VITE_SUPABASE_URL;
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Trim whitespace and any trailing slash(es): a trailing slash produces a
+// double-slash in request paths (".../rest/v1//rpc/..."), which the Supabase
+// gateway rejects with "Invalid path specified in request URL".
+const url = import.meta.env.VITE_SUPABASE_URL?.trim().replace(/\/+$/, '');
+const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim();
 
 export const onlineEnabled = Boolean(url && anonKey);
 
