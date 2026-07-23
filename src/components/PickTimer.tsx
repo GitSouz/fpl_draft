@@ -4,6 +4,8 @@ interface Props {
   // Changing this value restarts the clock (pass the current pick number).
   pickNumber: number;
   durationSec: number; // 0 disables the clock
+  // Called once when the clock reaches 0 (e.g. to auto-pick).
+  onExpire?: () => void;
 }
 
 function beep() {
@@ -30,16 +32,16 @@ function beep() {
 const fmt = (s: number) =>
   `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
-export default function PickTimer({ pickNumber, durationSec }: Props) {
+export default function PickTimer({ pickNumber, durationSec, onExpire }: Props) {
   const [remaining, setRemaining] = useState(durationSec);
   const [running, setRunning] = useState(true);
-  const beeped = useRef(false);
+  const fired = useRef(false); // guards the once-per-pick expiry actions
 
   // Restart whenever a new manager comes on the clock or the duration changes.
   useEffect(() => {
     setRemaining(durationSec);
     setRunning(true);
-    beeped.current = false;
+    fired.current = false;
   }, [pickNumber, durationSec]);
 
   useEffect(() => {
@@ -51,11 +53,12 @@ export default function PickTimer({ pickNumber, durationSec }: Props) {
   }, [running, durationSec]);
 
   useEffect(() => {
-    if (durationSec > 0 && remaining === 0 && !beeped.current) {
-      beeped.current = true;
+    if (durationSec > 0 && remaining === 0 && !fired.current) {
+      fired.current = true;
       beep();
+      onExpire?.();
     }
-  }, [remaining, durationSec]);
+  }, [remaining, durationSec, onExpire]);
 
   if (durationSec === 0) return null;
 
@@ -78,7 +81,7 @@ export default function PickTimer({ pickNumber, durationSec }: Props) {
           onClick={() => {
             setRemaining(durationSec);
             setRunning(true);
-            beeped.current = false;
+            fired.current = false;
           }}
           title="Reset clock"
         >

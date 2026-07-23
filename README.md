@@ -28,6 +28,10 @@ for any number of managers.
 - **Best-available suggestions** — the top eligible players the manager on the
   clock can legally draft, one click to pick. Ranked by total points, or by
   price in pre-season when points haven't accrued yet.
+- **Auto-pick** — hit **⚡ Auto-pick now** to instantly draft the best
+  available player for the manager on the clock, or leave **Auto-pick at 0**
+  on so the clock auto-drafts for anyone who runs out of time (or is away).
+  The player it will take is the highlighted top suggestion.
 - **Export to CSV** — download every squad (one row per pick, in draft order)
   to open in a spreadsheet.
 - **Undo** the last pick, and the whole draft **auto-saves** to your browser —
@@ -88,5 +92,5 @@ The dataset is generated (and reproducible) via `npm run gen-sample`.
 - This is a **single-machine** tool: one person runs it and drives the draft.
   Making it multiplayer (all 10 drafting from their own devices in real time)
   would need a shared server + websockets — happy to add that if you want it.
-- Possible additions: auto-pick when the clock expires, a full pick-by-pick
-  draft log, or keeper/pre-assigned picks if your league carries players over.
+- Possible additions: a full pick-by-pick draft log, or keeper/pre-assigned
+  picks if your league carries players over.

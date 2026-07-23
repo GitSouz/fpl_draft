@@ -43,6 +43,7 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
   const complete = overall >= total;
 
   const [timerSec, setTimerSec] = useState(90);
+  const [autoOnTimeout, setAutoOnTimeout] = useState(true);
 
   const takenIds = useMemo(() => new Set(picks.map((p) => p.playerId)), [picks]);
 
@@ -109,6 +110,12 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [players, takenIds, availablePositions, complete, usePriceRanking]);
 
+  // Draft the best available player for the manager on the clock.
+  const autoTarget = suggestions[0];
+  const autoPick = () => {
+    if (autoTarget) dispatch({ type: 'PICK', playerId: autoTarget.id });
+  };
+
   const lastPick = picks[picks.length - 1];
   const lastPlayer = lastPick ? playersById.get(lastPick.playerId) : undefined;
 
@@ -135,6 +142,18 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
                 </option>
               ))}
             </select>
+          </label>
+          <label
+            className={`check topbar-check ${timerSec === 0 ? 'disabled' : ''}`}
+            title="When the clock hits 0, automatically draft the best available player"
+          >
+            <input
+              type="checkbox"
+              checked={autoOnTimeout}
+              disabled={timerSec === 0}
+              onChange={(e) => setAutoOnTimeout(e.target.checked)}
+            />
+            Auto-pick at 0
           </label>
           <button
             className="btn-secondary"
@@ -195,7 +214,11 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
                 </span>
               ))}
             </div>
-            <PickTimer pickNumber={overall} durationSec={timerSec} />
+            <PickTimer
+              pickNumber={overall}
+              durationSec={timerSec}
+              onExpire={autoOnTimeout ? autoPick : undefined}
+            />
           </>
         )}
       </div>
@@ -208,10 +231,10 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
               (by {usePriceRanking ? 'price' : 'points'})
             </span>
           </span>
-          {suggestions.map((p) => (
+          {suggestions.map((p, i) => (
             <button
               key={p.id}
-              className="suggestion-chip"
+              className={`suggestion-chip ${i === 0 ? 'auto-target' : ''}`}
               onClick={() => dispatch({ type: 'PICK', playerId: p.id })}
               title={`Draft ${p.fullName}`}
             >
@@ -223,6 +246,18 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
               </span>
             </button>
           ))}
+          <button
+            className="btn-autopick"
+            onClick={autoPick}
+            disabled={!autoTarget}
+            title={
+              autoTarget
+                ? `Auto-pick ${autoTarget.fullName} (${autoTarget.teamShort}) for ${currentRoster?.name}`
+                : 'No eligible player'
+            }
+          >
+            ⚡ Auto-pick now
+          </button>
         </div>
       )}
 
