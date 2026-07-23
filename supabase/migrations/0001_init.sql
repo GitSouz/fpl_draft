@@ -133,22 +133,25 @@ declare
   i int;
   _seat_id uuid;
 begin
+  -- Table columns are qualified (alias / table name) because this function's
+  -- RETURNS TABLE(...) output columns `code` and `host_token` would otherwise
+  -- be ambiguous with the same-named table columns.
   loop
     _code := upper(substr(md5(gen_random_uuid()::text), 1, 6));
-    exit when not exists (select 1 from drafts where code = _code);
+    exit when not exists (select 1 from drafts d where d.code = _code);
   end loop;
 
   insert into drafts(code, settings)
   values (_code, coalesce(_settings, '{}'::jsonb))
-  returning id into _draft_id;
+  returning drafts.id into _draft_id;
 
   insert into draft_secrets(draft_id) values (_draft_id)
-  returning host_token into _host;
+  returning draft_secrets.host_token into _host;
 
   for i in 1 .. coalesce(array_length(_seat_names, 1), 0) loop
     insert into seats(draft_id, ordinal, name)
     values (_draft_id, i - 1, _seat_names[i])
-    returning id into _seat_id;
+    returning seats.id into _seat_id;
     insert into seat_secrets(seat_id) values (_seat_id);
   end loop;
 
