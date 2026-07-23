@@ -22,6 +22,14 @@ for any number of managers.
 - **Search, filter and sort** the player pool by position, points, form,
   price or ownership.
 - **Live squad panels** for every manager, with position slots filling up.
+- **Pick clock** — an optional per-pick countdown (30s / 60s / 90s / 2 min)
+  that resets each turn, warns as it runs low, and beeps when time's up. Pause,
+  resume or reset it any time.
+- **Best-available suggestions** — the top eligible players the manager on the
+  clock can legally draft, one click to pick. Ranked by total points, or by
+  price in pre-season when points haven't accrued yet.
+- **Export to CSV** — download every squad (one row per pick, in draft order)
+  to open in a spreadsheet.
 - **Undo** the last pick, and the whole draft **auto-saves** to your browser —
   refresh or close the tab without losing progress.
 
@@ -65,5 +73,5 @@ Then open the URL it prints (usually <http://localhost:5173>).
 - This is a **single-machine** tool: one person runs it and drives the draft.
   Making it multiplayer (all 10 drafting from their own devices in real time)
   would need a shared server + websockets — happy to add that if you want it.
-- Possible additions: a draft timer/clock, export squads to CSV, an
-  auto-pick / best-available suggestion, or a full pick-by-pick draft log.
+- Possible additions: auto-pick when the clock expires, a full pick-by-pick
+  draft log, or keeper/pre-assigned picks if your league carries players over.

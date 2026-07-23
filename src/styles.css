@@ -253,6 +253,110 @@ button:disabled {
   font-size: 0.8rem;
 }
 
+/* pick clock */
+.clock-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+}
+.clock-select select {
+  background: transparent;
+  color: var(--text);
+  border: none;
+  outline: none;
+  font: inherit;
+}
+.pick-timer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+}
+.timer-time {
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  font-size: 1.4rem;
+  min-width: 58px;
+  text-align: center;
+}
+.pick-timer.warn .timer-time {
+  color: var(--gk);
+}
+.pick-timer.danger {
+  border-color: var(--danger);
+}
+.pick-timer.danger .timer-time {
+  color: var(--danger);
+}
+.pick-timer.expired {
+  border-color: var(--danger);
+  background: rgba(255, 93, 108, 0.15);
+  animation: pulse 1s ease-in-out infinite;
+}
+.pick-timer.expired .timer-time {
+  color: var(--danger);
+  font-size: 1.05rem;
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.55;
+  }
+}
+.timer-controls {
+  display: flex;
+  gap: 4px;
+}
+
+/* best-available strip */
+.suggestion-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.suggestion-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.suggestion-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 12px 5px 8px;
+  color: var(--text);
+}
+.suggestion-chip:hover {
+  border-color: var(--primary);
+}
+.sug-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.sug-team {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.sug-stat {
+  color: var(--primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 .draft-main {
   flex: 1;
   display: grid;
