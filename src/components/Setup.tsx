@@ -42,14 +42,14 @@ export default function Setup({ onStart, onBack }: Props) {
   };
 
   const trimmed = names.map((n) => n.trim());
-  const filled = trimmed.filter((n) => n.length > 0);
+  const filled = trimmed.filter((n) => n.length > 0); // blank rows are ignored
   const hasDuplicates =
     new Set(filled.map((n) => n.toLowerCase())).size !== filled.length;
-  const canStart = filled.length >= 2 && !hasDuplicates && filled.length === names.length;
+  const canStart = filled.length >= 2 && !hasDuplicates;
 
   const start = () => {
     if (!canStart) return;
-    onStart(trimmed);
+    onStart(filled);
   };
 
   return (
@@ -122,13 +122,13 @@ export default function Setup({ onStart, onBack }: Props) {
       {hasDuplicates && (
         <p className="error-text">Manager names must be unique.</p>
       )}
-      {!hasDuplicates && filled.length !== names.length && (
-        <p className="muted">Fill in every name (or remove empty rows) to start.</p>
+      {!hasDuplicates && filled.length < 2 && (
+        <p className="muted">Enter at least 2 manager names to start.</p>
       )}
 
       <button className="btn-primary big" onClick={start} disabled={!canStart}>
-        Start draft — {names.length} managers × {SQUAD_SIZE} rounds ={' '}
-        {names.length * SQUAD_SIZE} picks
+        Start draft — {filled.length} manager{filled.length === 1 ? '' : 's'} ×{' '}
+        {SQUAD_SIZE} rounds = {filled.length * SQUAD_SIZE} picks
       </button>
     </div>
   );

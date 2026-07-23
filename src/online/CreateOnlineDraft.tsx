@@ -74,9 +74,9 @@ export default function CreateOnlineDraft({ onCreated, onBack }: Props) {
     });
 
   const trimmed = names.map((n) => n.trim());
-  const filled = trimmed.filter(Boolean);
+  const filled = trimmed.filter(Boolean); // blank rows are ignored
   const dupes = new Set(filled.map((n) => n.toLowerCase())).size !== filled.length;
-  const namesOk = filled.length >= 2 && !dupes && filled.length === names.length;
+  const namesOk = filled.length >= 2 && !dupes;
 
   const create = async () => {
     if (!players || !namesOk || creating) return;
@@ -84,7 +84,7 @@ export default function CreateOnlineDraft({ onCreated, onBack }: Props) {
     setCreateErr(null);
     const settings: DraftSettings = { timerSec, autoOnTimeout };
     try {
-      const created = await createDraft(settings, trimmed, players);
+      const created = await createDraft(settings, filled, players);
       onCreated(created, players);
     } catch (e) {
       setCreateErr(e instanceof Error ? e.message : 'Failed to create draft');
@@ -129,8 +129,9 @@ export default function CreateOnlineDraft({ onCreated, onBack }: Props) {
         </button>
         <h1>🌐 Create online draft</h1>
         <p className="muted">
-          Add every manager in draft order (they'll claim their own seat by name
-          once you share the code). Snake order runs for {SQUAD_SIZE} rounds.
+          Add your managers in draft order — any number from 2 up (blank rows are
+          ignored). They'll claim their own seat by name once you share the code.
+          Snake order runs for {SQUAD_SIZE} rounds.
         </p>
         {demo && (
           <p className="muted small">
@@ -204,10 +205,13 @@ export default function CreateOnlineDraft({ onCreated, onBack }: Props) {
       </div>
 
       {dupes && <p className="error-text">Manager names must be unique.</p>}
+      {!dupes && filled.length < 2 && (
+        <p className="muted">Enter at least 2 manager names to start.</p>
+      )}
       {createErr && <p className="error-text">{createErr}</p>}
 
       <button className="btn-primary big" onClick={create} disabled={!namesOk || creating}>
-        {creating ? 'Creating…' : `Create draft — ${names.length} managers`}
+        {creating ? 'Creating…' : `Create draft — ${filled.length} manager${filled.length === 1 ? '' : 's'}`}
       </button>
     </div>
   );
