@@ -24,7 +24,7 @@ export default function CreateOnlineDraft({ onCreated, onBack }: Props) {
   const [loadErr, setLoadErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const [names, setNames] = useState<string[]>(Array.from({ length: 10 }, () => ''));
+  const [names, setNames] = useState<string[]>(Array.from({ length: 4 }, () => ''));
   const [timerSec, setTimerSec] = useState(90);
   const [autoOnTimeout, setAutoOnTimeout] = useState(true);
   const [creating, setCreating] = useState(false);

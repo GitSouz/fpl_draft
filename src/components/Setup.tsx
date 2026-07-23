@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { SQUAD_SIZE } from '../draft';
 
-const DEFAULT_MANAGERS = 10;
+const DEFAULT_MANAGERS = 4;
 
 interface Props {
   onStart: (managers: string[]) => void;
