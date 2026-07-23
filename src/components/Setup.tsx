@@ -5,9 +5,10 @@ const DEFAULT_MANAGERS = 10;
 
 interface Props {
   onStart: (managers: string[]) => void;
+  onBack?: () => void;
 }
 
-export default function Setup({ onStart }: Props) {
+export default function Setup({ onStart, onBack }: Props) {
   const [names, setNames] = useState<string[]>(
     Array.from({ length: DEFAULT_MANAGERS }, () => '')
   );
@@ -54,6 +55,11 @@ export default function Setup({ onStart }: Props) {
   return (
     <div className="setup">
       <header className="setup-header">
+        {onBack && (
+          <button className="link-btn back-link" onClick={onBack}>
+            ← Back to menu
+          </button>
+        )}
         <h1>⚽ FPL Snake Draft</h1>
         <p className="muted">
           Enter your managers in draft order. Round 1 goes top-to-bottom, round 2

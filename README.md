@@ -1,12 +1,24 @@
 # ⚽ FPL Snake Draft
 
-A local web app for running a **custom-order snake draft** for a Fantasy
-Premier League draft league — the thing the official site won't let you do
-(it only randomizes). Enter your managers, set the order you want, and draft
-live from the **up-to-date FPL player list**.
+A web app for running a **custom-order snake draft** for a Fantasy Premier
+League draft league — the thing the official site won't let you do (it only
+randomizes). Enter your managers, set the order you want, and draft live from
+the **up-to-date FPL player list**.
 
 Built for a 10-manager league using full FPL Draft squad rules, but it works
 for any number of managers.
+
+## Two ways to run it
+
+- **💻 Local** *(zero setup)* — one machine, one screen. Run `npm run dev`,
+  everyone drafts from the same computer. Perfect for an in-person draft night.
+- **🌐 Online** *(free, ~20 min setup)* — create a room, share the code, and all
+  10 managers draft live from their own devices with picks synced in real time.
+  Requires a free Supabase project + free hosting — see
+  **[docs/ONLINE_SETUP.md](docs/ONLINE_SETUP.md)**.
+
+Online mode only switches on once you add Supabase keys; without them the app is
+local-only and unchanged.
 
 ## Features
 
@@ -36,6 +48,11 @@ for any number of managers.
   to open in a spreadsheet.
 - **Undo** the last pick, and the whole draft **auto-saves** to your browser —
   refresh or close the tab without losing progress.
+- **Online multiplayer** *(optional)* — a shared draft room where everyone joins
+  by code, claims their seat, and drafts live from their own device. Turns are
+  enforced server-side (no double-picks, no picking out of turn), the pick clock
+  runs server-side so auto-pick fires even if someone disconnects, and the host
+  can undo or force a pick. See [docs/ONLINE_SETUP.md](docs/ONLINE_SETUP.md).
 
 ## Requirements
 
