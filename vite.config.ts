@@ -15,9 +15,22 @@ export default defineConfig({
         secure: true,
         rewrite: (path) => path.replace(/^\/api\/fpl/, '/api'),
         headers: {
-          // FPL occasionally rejects requests without a browser-like UA.
+          // The FPL API sits behind Cloudflare, which returns 403/503 to
+          // requests that don't look like a real browser. Send a full,
+          // current browser header set so it's treated as a normal visitor.
           'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+          Accept: 'application/json, text/plain, */*',
+          'Accept-Language': 'en-US,en;q=0.9',
+          Referer: 'https://fantasy.premierleague.com/',
+          Origin: 'https://fantasy.premierleague.com',
+          'sec-ch-ua':
+            '"Chromium";v="126", "Not.A/Brand";v="24", "Google Chrome";v="126"',
+          'sec-ch-ua-mobile': '?0',
+          'sec-ch-ua-platform': '"Windows"',
+          'Sec-Fetch-Dest': 'empty',
+          'Sec-Fetch-Mode': 'cors',
+          'Sec-Fetch-Site': 'same-origin',
         },
       },
     },
