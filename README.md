@@ -52,6 +52,21 @@ Then open the URL it prints (usually <http://localhost:5173>).
 > proxies the request for you (see `vite.config.ts`). Run it on one machine on
 > draft night, share your screen, and call out the picks.
 
+## Testing with sample data (e.g. between seasons)
+
+The real FPL API goes offline between seasons and during daily maintenance
+(you'll see a "Game Updating" message, and the app shows a friendly notice).
+To try the app out any time, click **"Use sample data instead"** on the load
+screen.
+
+Sample mode loads **400 fictional players** spread across the 20 real Premier
+League clubs, with realistic positions, prices and last-season-style points —
+enough to run a full 10-manager draft and try every feature. A **🧪 Demo mode**
+banner stays visible so it's never mistaken for live data, and you can switch
+back to live data any time.
+
+The dataset is generated (and reproducible) via `npm run gen-sample`.
+
 ## How a draft goes
 
 1. On the setup screen, enter your 10 managers **in the draft order you want**

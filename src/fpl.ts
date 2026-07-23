@@ -69,9 +69,28 @@ const num = (s: string): number => {
 
 export async function fetchPlayers(): Promise<Player[]> {
   const res = await fetch('/api/fpl/bootstrap-static/');
+
+  // Between seasons (and during daily updates) FPL takes the game offline and
+  // returns a 503 with an HTML "Game Updating" page instead of JSON.
+  if (res.status === 503) {
+    throw new Error(
+      'FPL is currently updating (this happens between seasons and during ' +
+        'daily maintenance). The new player data isn’t live yet — try again later, ' +
+        'or use the sample data below to test the draft now.'
+    );
+  }
   if (!res.ok) {
     throw new Error(`FPL API responded ${res.status} ${res.statusText}`);
   }
+
+  const contentType = res.headers.get('content-type') ?? '';
+  if (!contentType.includes('json')) {
+    throw new Error(
+      'FPL returned an unexpected (non-JSON) response — the game may be ' +
+        'updating. Try again later, or use the sample data below.'
+    );
+  }
+
   const data: Bootstrap = await res.json();
 
   const teamById = new Map<number, RawTeam>();
