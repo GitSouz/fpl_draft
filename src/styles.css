@@ -715,6 +715,21 @@ button:disabled {
 .pool-table td.num {
   text-align: right;
 }
+.pool-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+.pool-table th.sortable:hover {
+  color: var(--text);
+}
+.pool-table th.sorted {
+  color: var(--primary);
+}
+.sort-hint {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
 .pool-table tbody tr {
   border-bottom: 1px solid rgba(42, 47, 58, 0.5);
 }

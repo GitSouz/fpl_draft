@@ -293,7 +293,7 @@ returns void
 language plpgsql security definer set search_path = public as $$
 declare
   _status text; _overall int; _n int; _deadline timestamptz;
-  _onclock uuid; _use_price boolean; _player_id int;
+  _onclock uuid; _player_id int;
 begin
   select status, current_pick, deadline into _status, _overall, _deadline
     from drafts where id = _draft_id for update;
@@ -308,10 +308,8 @@ begin
   end if;
 
   _onclock := seat_on_clock(_draft_id, _overall);
-  select not exists (select 1 from draft_players
-                      where draft_id = _draft_id and total_points > 0)
-    into _use_price;
 
+  -- Best available by FPL price (£).
   select dp.player_id into _player_id
   from draft_players dp
   where dp.draft_id = _draft_id
@@ -322,7 +320,7 @@ begin
            join draft_players d2 on d2.draft_id = pk.draft_id and d2.player_id = pk.player_id
           where pk.draft_id = _draft_id and pk.seat_id = _onclock
             and d2.position = dp.position) < pos_limit(dp.position)
-  order by (case when _use_price then dp.price else dp.total_points end) desc, dp.player_id
+  order by dp.price desc, dp.player_id
   limit 1;
 
   if _player_id is null then raise exception 'No eligible player to auto-pick'; end if;

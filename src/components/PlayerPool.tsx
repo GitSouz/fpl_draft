@@ -2,14 +2,31 @@ import { useMemo, useState } from 'react';
 import type { Player, Position } from '../fpl';
 import { POSITIONS } from '../draft';
 
-type SortKey = 'totalPoints' | 'form' | 'price' | 'pointsPerGame' | 'selectedByPercent';
+type SortKey =
+  | 'position'
+  | 'name'
+  | 'teamShort'
+  | 'totalPoints'
+  | 'form'
+  | 'price'
+  | 'selectedByPercent';
+type SortDir = 'asc' | 'desc';
 
-const SORT_LABELS: Record<SortKey, string> = {
-  totalPoints: 'Total pts',
-  form: 'Form',
-  pointsPerGame: 'Pts/game',
-  price: 'Price',
-  selectedByPercent: 'Owned %',
+// Text columns default to A→Z; numeric columns default to high→low.
+const TEXT_KEYS: SortKey[] = ['position', 'name', 'teamShort'];
+const defaultDir = (key: SortKey): SortDir => (TEXT_KEYS.includes(key) ? 'asc' : 'desc');
+
+const sortValue = (p: Player, key: SortKey): number | string => {
+  switch (key) {
+    case 'position':
+      return POSITIONS.indexOf(p.position);
+    case 'name':
+      return p.name.toLowerCase();
+    case 'teamShort':
+      return p.teamShort.toLowerCase();
+    default:
+      return p[key];
+  }
 };
 
 interface Props {
@@ -48,11 +65,22 @@ export default function PlayerPool({
   const [search, setSearch] = useState('');
   const [posFilter, setPosFilter] = useState<Position | 'ALL'>('ALL');
   const [sortKey, setSortKey] = useState<SortKey>('totalPoints');
+  const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [hideTaken, setHideTaken] = useState(true);
   const [onlyPickable, setOnlyPickable] = useState(false);
 
+  const toggleSort = (key: SortKey) => {
+    if (key === sortKey) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortKey(key);
+      setSortDir(defaultDir(key));
+    }
+  };
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
+    const dir = sortDir === 'asc' ? 1 : -1;
     return players
       .filter((p) => {
         if (hideTaken && takenIds.has(p.id)) return false;
@@ -64,9 +92,27 @@ export default function PlayerPool({
         }
         return true;
       })
-      .sort((a, b) => b[sortKey] - a[sortKey])
+      .sort((a, b) => {
+        const av = sortValue(a, sortKey);
+        const bv = sortValue(b, sortKey);
+        let r: number;
+        if (typeof av === 'number' && typeof bv === 'number') r = av - bv;
+        else r = String(av).localeCompare(String(bv));
+        // Stable tiebreak by total points so equal keys have a sensible order.
+        if (r === 0) r = a.totalPoints - b.totalPoints;
+        return r * dir;
+      })
       .slice(0, 300);
-  }, [players, takenIds, posFilter, sortKey, hideTaken, onlyPickable, search, canPick]);
+  }, [players, takenIds, posFilter, sortKey, sortDir, hideTaken, onlyPickable, search, canPick]);
+
+  const arrow = (key: SortKey) =>
+    key === sortKey ? (sortDir === 'asc' ? ' ▲' : ' ▼') : '';
+  const thProps = (key: SortKey, className: string) => ({
+    className: `sortable ${className} ${key === sortKey ? 'sorted' : ''}`,
+    onClick: () => toggleSort(key),
+    role: 'button' as const,
+    title: 'Click to sort',
+  });
 
   return (
     <section className="pool">
@@ -108,16 +154,7 @@ export default function PlayerPool({
       </div>
 
       <div className="pool-controls secondary">
-        <label className="sort-label">
-          Sort:
-          <select value={sortKey} onChange={(e) => setSortKey(e.target.value as SortKey)}>
-            {(Object.keys(SORT_LABELS) as SortKey[]).map((k) => (
-              <option key={k} value={k}>
-                {SORT_LABELS[k]}
-              </option>
-            ))}
-          </select>
-        </label>
+        <span className="sort-hint">Tap a column heading to sort</span>
         <label className="check">
           <input
             type="checkbox"
@@ -142,13 +179,13 @@ export default function PlayerPool({
         <table className="pool-table">
           <thead>
             <tr>
-              <th className="col-pos">Pos</th>
-              <th className="col-name">Player</th>
-              <th className="col-team">Team</th>
-              <th className="num">Pts</th>
-              <th className="num">Form</th>
-              <th className="num">£</th>
-              <th className="num">Own%</th>
+              <th {...thProps('position', 'col-pos')}>Pos{arrow('position')}</th>
+              <th {...thProps('name', 'col-name')}>Player{arrow('name')}</th>
+              <th {...thProps('teamShort', 'col-team')}>Team{arrow('teamShort')}</th>
+              <th {...thProps('totalPoints', 'num')}>Pts{arrow('totalPoints')}</th>
+              <th {...thProps('form', 'num')}>Form{arrow('form')}</th>
+              <th {...thProps('price', 'num')}>£{arrow('price')}</th>
+              <th {...thProps('selectedByPercent', 'num')}>Own%{arrow('selectedByPercent')}</th>
               <th className="col-action"></th>
             </tr>
           </thead>

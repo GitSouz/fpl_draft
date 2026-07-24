@@ -47,15 +47,10 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
 
   const takenIds = useMemo(() => new Set(picks.map((p) => p.playerId)), [picks]);
 
-  // Pre-season the API reports 0 total points for everyone, so ranking by
-  // points is meaningless. In that case fall back to FPL price, which encodes
-  // expected quality. Mid-season we rank by points.
-  const usePriceRanking = useMemo(
-    () => players.every((p) => p.totalPoints === 0),
-    [players]
-  );
-  const rankScore = (p: Player): number =>
-    usePriceRanking ? p.price : p.totalPoints;
+  // Best-available / auto-pick ranks by FPL price (£) — the most reliable
+  // proxy for a player's overall value, and meaningful even pre-season before
+  // points accrue.
+  const rankScore = (p: Player): number => p.price;
 
   // Build a roster per manager.
   const rosters: Roster[] = useMemo(() => {
@@ -108,7 +103,7 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
       .sort((a, b) => rankScore(b) - rankScore(a))
       .slice(0, 3);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [players, takenIds, availablePositions, complete, usePriceRanking]);
+  }, [players, takenIds, availablePositions, complete]);
 
   // Draft the best available player for the manager on the clock.
   const autoTarget = suggestions[0];
@@ -228,7 +223,7 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
           <span className="suggestion-label">
             💡 Best available{' '}
             <span className="muted">
-              (by {usePriceRanking ? 'price' : 'points'})
+              (by price)
             </span>
           </span>
           {suggestions.map((p, i) => (
@@ -242,7 +237,7 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
               <span className="sug-name">{p.name}</span>
               <span className="sug-team">{p.teamShort}</span>
               <span className="sug-stat">
-                {usePriceRanking ? `£${p.price.toFixed(1)}` : `${p.totalPoints} pts`}
+                £{p.price.toFixed(1)}
               </span>
             </button>
           ))}

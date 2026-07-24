@@ -53,8 +53,8 @@ export default function OnlineDraftRoom({
 
   const takenIds = useMemo(() => new Set(picks.map((p) => p.player_id)), [picks]);
 
-  const usePriceRanking = useMemo(() => pool.every((p) => p.totalPoints === 0), [pool]);
-  const rankScore = (p: Player) => (usePriceRanking ? p.price : p.totalPoints);
+  // Best-available / auto-pick ranks by FPL price (£).
+  const rankScore = (p: Player) => p.price;
 
   // Rosters keyed by seat ordinal (so RosterBoard indexes line up with order).
   const rosters: Roster[] = useMemo(() => {
@@ -96,7 +96,7 @@ export default function OnlineDraftRoom({
       .sort((a, b) => rankScore(b) - rankScore(a))
       .slice(0, 3);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pool, takenIds, availablePositions, complete, usePriceRanking]);
+  }, [pool, takenIds, availablePositions, complete]);
 
   // Only the manager on the clock can draft; others see a read-only board.
   const canPick = (player: Player): boolean =>
@@ -263,7 +263,7 @@ export default function OnlineDraftRoom({
         <div className="suggestion-bar">
           <span className="suggestion-label">
             💡 Best available{' '}
-            <span className="muted">(by {usePriceRanking ? 'price' : 'points'})</span>
+            <span className="muted">(by price)</span>
           </span>
           {suggestions.map((p, i) => (
             <button
@@ -276,7 +276,7 @@ export default function OnlineDraftRoom({
               <span className="sug-name">{p.name}</span>
               <span className="sug-team">{p.teamShort}</span>
               <span className="sug-stat">
-                {usePriceRanking ? `£${p.price.toFixed(1)}` : `${p.totalPoints} pts`}
+                £{p.price.toFixed(1)}
               </span>
             </button>
           ))}
