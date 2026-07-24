@@ -68,7 +68,9 @@ const num = (s: string): number => {
 };
 
 export async function fetchPlayers(): Promise<Player[]> {
-  const res = await fetch('/api/fpl/bootstrap-static/');
+  // No trailing slash here: Vercel's catch-all function only matches the
+  // no-slash form. Both proxies add the slash FPL needs before forwarding.
+  const res = await fetch('/api/fpl/bootstrap-static');
 
   // Between seasons (and during daily updates) FPL takes the game offline and
   // returns a 503 with an HTML "Game Updating" page instead of JSON.

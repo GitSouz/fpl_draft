@@ -13,7 +13,14 @@ export default defineConfig({
         target: 'https://fantasy.premierleague.com',
         changeOrigin: true,
         secure: true,
-        rewrite: (path) => path.replace(/^\/api\/fpl/, '/api'),
+        // Strip the /api/fpl prefix and ensure a trailing slash on the path
+        // (before any query string) — FPL 404s without it.
+        rewrite: (path) => {
+          const stripped = path.replace(/^\/api\/fpl/, '/api');
+          const [p, q] = stripped.split('?');
+          const withSlash = p.endsWith('/') ? p : `${p}/`;
+          return q ? `${withSlash}?${q}` : withSlash;
+        },
         headers: {
           // The FPL API sits behind Cloudflare, which returns 403/503 to
           // requests that don't look like a real browser. Send a full,
