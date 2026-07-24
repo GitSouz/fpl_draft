@@ -1,7 +1,7 @@
 // Vercel serverless function: proxies the FPL API in production (the Vite dev
 // proxy only exists in `npm run dev`). The browser calls /api/fpl/... on the
-// same origin and this relays it to fantasy.premierleague.com from the server,
-// where CORS doesn't apply. Mirrors the header set in vite.config.ts.
+// same origin; a rewrite in vercel.json routes it here as /api/fpl?path=...
+// and this relays it to fantasy.premierleague.com, where CORS doesn't apply.
 //
 // This file lives outside src/ so it is NOT part of the frontend tsc build;
 // Vercel compiles and runs it as a Node function.
@@ -18,10 +18,24 @@ const BROWSER_HEADERS: Record<string, string> = {
 // Using loose types so no @vercel/node dependency is required.
 export default async function handler(req: any, res: any): Promise<void> {
   try {
-    // Strip the /api/fpl prefix and forward the remaining path + query.
-    const rest = String(req.url || '').replace(/^\/api\/fpl/, '');
-    const target = `https://fantasy.premierleague.com/api${rest}`;
+    // The FPL path comes from the rewrite's ?path=... ; fall back to parsing
+    // the URL directly in case the request reaches here unrewritten.
+    let path = '';
+    const q = req.query?.path;
+    if (Array.isArray(q)) path = q.join('/');
+    else if (typeof q === 'string') path = q;
+    if (!path) {
+      path = String(req.url || '')
+        .split('?')[0]
+        .replace(/^\/api\/fpl\/?/, '');
+    }
 
+    path = path.replace(/^\/+/, ''); // no leading slash
+    // FPL endpoints require a trailing slash (e.g. /api/bootstrap-static/);
+    // Vercel strips it from the incoming URL, so re-add it here.
+    if (path && !path.endsWith('/')) path += '/';
+
+    const target = `https://fantasy.premierleague.com/api/${path}`;
     const upstream = await fetch(target, { headers: BROWSER_HEADERS });
     const body = await upstream.text();
 
@@ -30,7 +44,6 @@ export default async function handler(req: any, res: any): Promise<void> {
       'content-type',
       upstream.headers.get('content-type') || 'application/json'
     );
-    // Small cache so repeated loads during setup are snappy.
     res.setHeader('cache-control', 's-maxage=60, stale-while-revalidate=300');
     res.send(body);
   } catch (err) {
