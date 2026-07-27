@@ -64,7 +64,7 @@ export default function PlayerPool({
 }: Props) {
   const [search, setSearch] = useState('');
   const [posFilter, setPosFilter] = useState<Position | 'ALL'>('ALL');
-  const [sortKey, setSortKey] = useState<SortKey>('totalPoints');
+  const [sortKey, setSortKey] = useState<SortKey>('price');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [hideTaken, setHideTaken] = useState(true);
   const [onlyPickable, setOnlyPickable] = useState(false);
