@@ -188,6 +188,20 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
         </div>
       </header>
 
+      {lastPlayer && lastPick && (
+        <div className="last-pick-bar">
+          <span className="lp-label">Last pick</span>
+          <span className={`pos-tag sm pos-${lastPlayer.position}`}>
+            {lastPlayer.position}
+          </span>
+          <span className="lp-name">{lastPlayer.name}</span>
+          <span className="lp-team">{lastPlayer.teamShort}</span>
+          <span className="lp-arrow">→</span>
+          <span className="lp-manager">{managers[lastPick.managerIndex]}</span>
+          <span className="lp-round">Round {lastPick.round + 1}</span>
+        </div>
+      )}
+
       <div className="onclock-bar">
         {complete ? (
           <div className="onclock done">🏁 Draft complete — all {total} picks made!</div>

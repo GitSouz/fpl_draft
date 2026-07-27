@@ -173,6 +173,10 @@ export default function OnlineDraftRoom({
     upcoming.push(managerForPick(o, managerCount));
   }
 
+  const lastPick = picks.length > 0 ? picks[picks.length - 1] : null;
+  const lastPlayer = lastPick ? poolById.get(lastPick.player_id) : undefined;
+  const lastManager = lastPick ? seatById.get(lastPick.seat_id)?.name : undefined;
+
   return (
     <div className="draft-room">
       <header className="draft-topbar">
@@ -224,6 +228,21 @@ export default function OnlineDraftRoom({
           </button>
         </div>
       </header>
+
+      {lastPlayer && lastPick && (
+        <div className="last-pick-bar">
+          <span className="lp-label">Last pick</span>
+          <span className={`pos-tag sm pos-${lastPlayer.position}`}>
+            {lastPlayer.position}
+          </span>
+          <span className="lp-name">{lastPlayer.name}</span>
+          <span className="lp-team">{lastPlayer.teamShort}</span>
+          {lastPick.auto && <span className="lp-auto">auto</span>}
+          <span className="lp-arrow">→</span>
+          <span className="lp-manager">{lastManager}</span>
+          <span className="lp-round">Round {lastPick.round + 1}</span>
+        </div>
+      )}
 
       <div className="onclock-bar">
         {complete ? (

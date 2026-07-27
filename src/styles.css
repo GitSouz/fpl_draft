@@ -423,6 +423,52 @@ button:disabled {
   gap: 8px;
 }
 
+.last-pick-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+.lp-label {
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.lp-name {
+  font-weight: 700;
+}
+.lp-team {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.lp-arrow {
+  color: var(--muted);
+}
+.lp-manager {
+  font-weight: 700;
+  color: var(--primary);
+}
+.lp-round {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.lp-auto {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
 .onclock-bar {
   display: flex;
   align-items: center;
