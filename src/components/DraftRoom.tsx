@@ -44,6 +44,7 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
 
   const [timerSec, setTimerSec] = useState(90);
   const [autoOnTimeout, setAutoOnTimeout] = useState(true);
+  const [showSquads, setShowSquads] = useState(false); // mobile: pool vs squads
 
   const takenIds = useMemo(() => new Set(picks.map((p) => p.playerId)), [picks]);
 
@@ -125,6 +126,12 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
           </span>
         </div>
         <div className="topbar-right">
+          <button
+            className="btn-secondary mobile-only"
+            onClick={() => setShowSquads((s) => !s)}
+          >
+            {showSquads ? '📋 Players' : '👥 Squads'}
+          </button>
           <label className="clock-select" title="Pick clock">
             ⏱
             <select
@@ -270,7 +277,7 @@ export default function DraftRoom({ state, players, playersById, dispatch }: Pro
         </div>
       )}
 
-      <div className="draft-main">
+      <div className={`draft-main ${showSquads ? 'show-squads' : ''}`}>
         <PlayerPool
           players={players}
           takenIds={takenIds}

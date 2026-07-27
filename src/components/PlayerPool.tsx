@@ -183,9 +183,11 @@ export default function PlayerPool({
               <th {...thProps('name', 'col-name')}>Player{arrow('name')}</th>
               <th {...thProps('teamShort', 'col-team')}>Team{arrow('teamShort')}</th>
               <th {...thProps('totalPoints', 'num')}>Pts{arrow('totalPoints')}</th>
-              <th {...thProps('form', 'num')}>Form{arrow('form')}</th>
+              <th {...thProps('form', 'num hide-mobile')}>Form{arrow('form')}</th>
               <th {...thProps('price', 'num')}>£{arrow('price')}</th>
-              <th {...thProps('selectedByPercent', 'num')}>Own%{arrow('selectedByPercent')}</th>
+              <th {...thProps('selectedByPercent', 'num hide-mobile')}>
+                Own%{arrow('selectedByPercent')}
+              </th>
               <th className="col-action"></th>
             </tr>
           </thead>
@@ -211,9 +213,11 @@ export default function PlayerPool({
                   </td>
                   <td className="col-team">{p.teamShort}</td>
                   <td className="num strong">{p.totalPoints}</td>
-                  <td className="num">{p.form.toFixed(1)}</td>
+                  <td className="num hide-mobile">{p.form.toFixed(1)}</td>
                   <td className="num">{p.price.toFixed(1)}</td>
-                  <td className="num muted">{p.selectedByPercent.toFixed(0)}</td>
+                  <td className="num muted hide-mobile">
+                    {p.selectedByPercent.toFixed(0)}
+                  </td>
                   <td className="col-action">
                     {taken ? (
                       <span className="drafted-tag">Drafted</span>

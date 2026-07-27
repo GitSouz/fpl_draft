@@ -41,6 +41,7 @@ export default function OnlineDraftRoom({
   onExit,
 }: Props) {
   const [actionErr, setActionErr] = useState<string | null>(null);
+  const [showSquads, setShowSquads] = useState(false); // mobile: pool vs squads
 
   const managers = seats.map((s) => s.name);
   const managerCount = seats.length;
@@ -191,6 +192,12 @@ export default function OnlineDraftRoom({
         </div>
         <div className="topbar-right">
           <button
+            className="btn-secondary mobile-only"
+            onClick={() => setShowSquads((s) => !s)}
+          >
+            {showSquads ? '📋 Players' : '👥 Squads'}
+          </button>
+          <button
             className="btn-secondary"
             onClick={() =>
               downloadCsv(
@@ -300,7 +307,7 @@ export default function OnlineDraftRoom({
         </div>
       )}
 
-      <div className="draft-main">
+      <div className={`draft-main ${showSquads ? 'show-squads' : ''}`}>
         <PlayerPool
           players={pool}
           takenIds={takenIds}

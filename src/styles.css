@@ -57,6 +57,11 @@ button:disabled {
   opacity: 0.45;
 }
 
+/* Shown only on narrow (mobile) screens via the media query at the bottom. */
+.mobile-only {
+  display: none;
+}
+
 .btn-primary {
   background: var(--primary);
   color: var(--primary-ink);
@@ -945,11 +950,79 @@ tr.taken {
 }
 
 @media (max-width: 820px) {
+  .mobile-only {
+    display: inline-flex;
+  }
+
+  /* Single column: show the pool OR the squads, toggled from the top bar. */
   .draft-main {
     grid-template-columns: 1fr;
-    overflow-y: auto;
+  }
+  .pool,
+  .roster-board {
+    min-height: 0;
   }
   .roster-board {
-    border-top: 1px solid var(--border);
+    display: none;
+  }
+  .draft-main.show-squads .pool {
+    display: none;
+  }
+  .draft-main.show-squads .roster-board {
+    display: flex;
+  }
+
+  /* Hide low-priority columns so player name / pts / £ stay readable. */
+  .hide-mobile {
+    display: none;
+  }
+
+  /* Compact top bars; let them wrap instead of overflowing. */
+  .draft-topbar {
+    gap: 8px 10px;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+  }
+  .topbar-left {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .topbar-right {
+    flex-wrap: wrap;
+  }
+  .onclock-bar {
+    padding: 8px 12px;
+  }
+  .onclock-name {
+    font-size: 1.1rem;
+  }
+
+  /* Horizontal scroll for chip rows rather than tall wrapping. */
+  .suggestion-bar,
+  .upcoming {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .suggestion-chip,
+  .upcoming-chip {
+    flex: 0 0 auto;
+  }
+  .btn-autopick {
+    margin-left: 0;
+  }
+
+  /* Roomier rows + bigger tap target for the Draft button. */
+  .search {
+    min-width: 0;
+  }
+  .pool-table td {
+    padding: 10px 8px;
+  }
+  .btn-pick {
+    padding: 8px 14px;
+  }
+  .draft-main.show-squads .roster-board {
+    border-top: none;
   }
 }
