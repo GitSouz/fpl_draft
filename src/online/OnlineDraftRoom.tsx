@@ -5,7 +5,7 @@ import { downloadCsv, picksToCsv } from '../csv';
 import PlayerPool from '../components/PlayerPool';
 import RosterBoard from '../components/RosterBoard';
 import type { Roster } from '../components/DraftRoom';
-import { autoPick, makePick, undoPick } from './api';
+import { autoPick, makePick } from './api';
 import type { DraftRow, PickRow, SeatRow } from './types';
 import type { OnlineSession } from './session';
 
@@ -202,26 +202,14 @@ export default function OnlineDraftRoom({
           >
             ⬇ CSV
           </button>
-          {isHost && (
-            <>
-              <button
-                className="btn-secondary"
-                onClick={() => runAction(() => undoPick(session.hostToken!))}
-                disabled={picks.length === 0}
-                title="Host: undo the last pick"
-              >
-                ↩ Undo
-              </button>
-              {!complete && (
-                <button
-                  className="btn-secondary"
-                  onClick={() => runAction(() => autoPick(draft.id, session.hostToken))}
-                  title="Host: force auto-pick for the manager on the clock"
-                >
-                  ⚡ Force pick
-                </button>
-              )}
-            </>
+          {isHost && !complete && (
+            <button
+              className="btn-secondary"
+              onClick={() => runAction(() => autoPick(draft.id, session.hostToken))}
+              title="Host: force auto-pick for the manager on the clock"
+            >
+              ⚡ Force pick
+            </button>
           )}
           <button className="btn-secondary" onClick={onExit} title="Leave (rejoin with the code)">
             Leave
