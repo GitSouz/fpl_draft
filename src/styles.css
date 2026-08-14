@@ -720,6 +720,30 @@ button:disabled {
 .chip.pos-full {
   opacity: 0.4;
 }
+.team-filter select {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  outline: none;
+}
+.team-filter select:focus {
+  border-color: var(--primary);
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 .sort-label select {
   margin-left: 6px;
   background: var(--panel);
