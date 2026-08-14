@@ -64,10 +64,22 @@ export default function PlayerPool({
 }: Props) {
   const [search, setSearch] = useState('');
   const [posFilter, setPosFilter] = useState<Position | 'ALL'>('ALL');
+  const [teamFilter, setTeamFilter] = useState<string | 'ALL'>('ALL');
   const [sortKey, setSortKey] = useState<SortKey>('price');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
   const [hideTaken, setHideTaken] = useState(true);
   const [onlyPickable, setOnlyPickable] = useState(false);
+
+  // Unique team list (short name), sorted alphabetically, for the team filter.
+  const teams = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const p of players) {
+      if (!map.has(p.teamShort)) map.set(p.teamShort, p.teamName);
+    }
+    return Array.from(map.entries())
+      .map(([teamShort, teamName]) => ({ teamShort, teamName }))
+      .sort((a, b) => a.teamShort.localeCompare(b.teamShort));
+  }, [players]);
 
   const toggleSort = (key: SortKey) => {
     if (key === sortKey) {
@@ -85,6 +97,7 @@ export default function PlayerPool({
       .filter((p) => {
         if (hideTaken && takenIds.has(p.id)) return false;
         if (posFilter !== 'ALL' && p.position !== posFilter) return false;
+        if (teamFilter !== 'ALL' && p.teamShort !== teamFilter) return false;
         if (onlyPickable && !canPick(p)) return false;
         if (q) {
           const hay = `${p.name} ${p.fullName} ${p.teamShort} ${p.teamName}`.toLowerCase();
@@ -103,7 +116,7 @@ export default function PlayerPool({
         return r * dir;
       })
       .slice(0, 300);
-  }, [players, takenIds, posFilter, sortKey, sortDir, hideTaken, onlyPickable, search, canPick]);
+  }, [players, takenIds, posFilter, teamFilter, sortKey, sortDir, hideTaken, onlyPickable, search, canPick]);
 
   const arrow = (key: SortKey) =>
     key === sortKey ? (sortDir === 'asc' ? ' ▲' : ' ▼') : '';
@@ -151,6 +164,21 @@ export default function PlayerPool({
             </button>
           ))}
         </div>
+        <label className="team-filter">
+          <span className="sr-only">Filter by team</span>
+          <select
+            value={teamFilter}
+            onChange={(e) => setTeamFilter(e.target.value)}
+            title="Filter by team"
+          >
+            <option value="ALL">All teams</option>
+            {teams.map((t) => (
+              <option key={t.teamShort} value={t.teamShort}>
+                {t.teamShort} — {t.teamName}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
 
       <div className="pool-controls secondary">
