@@ -202,7 +202,7 @@ export interface LeagueBundle {
   transactions: Transaction[];
   trades: Trade[];
   choices: Choice[];
-  /** Squad for the current gameweek, keyed by entry id. */
+  /** Squad for the current gameweek, keyed by entry id (automatic subs already applied). */
   picks: Record<number, Pick[]>;
   /** Live points for the current gameweek, keyed by element id. */
   live: Record<number, LiveElement>;
@@ -245,7 +245,7 @@ export async function fetchLeague(leagueId: number): Promise<LeagueBundle> {
   const picks: Record<number, Pick[]> = {};
   const history: Record<number, EntryHistory['history']> = {};
   entries.forEach((e, i) => {
-    picks[e.entry_id!] = pickList[i].picks ?? [];
+    picks[e.entry_id!] = applySubs(pickList[i].picks ?? [], pickList[i].subs ?? []);
     if (histList[i]) history[e.entry_id!] = histList[i].history ?? [];
   });
 
@@ -266,6 +266,18 @@ export async function fetchLeague(leagueId: number): Promise<LeagueBundle> {
     currentEvent,
     fetchedAt: Date.now(),
   };
+}
+
+/** Swap automatic substitutions into the XI so line-ups match the official score. */
+function applySubs(picks: Pick[], subs: { element_in: number; element_out: number }[]): Pick[] {
+  if (!subs.length) return picks;
+  const out = picks.map((p) => ({ ...p }));
+  for (const s of subs) {
+    const a = out.find((p) => p.element === s.element_in);
+    const b = out.find((p) => p.element === s.element_out);
+    if (a && b) [a.position, b.position] = [b.position, a.position];
+  }
+  return out;
 }
 
 /** Public FPL Draft API: player data only (used to build the demo league). */
