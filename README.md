@@ -54,6 +54,34 @@ local-only and unchanged.
   runs server-side so auto-pick fires even if someone disconnects, and the host
   can undo or force a pick. See [docs/ONLINE_SETUP.md](docs/ONLINE_SETUP.md).
 
+## 📊 League dashboard
+
+Once the season's under way, open **League dashboard** from the menu (or go to
+`/#league`, or `/?league=<your league ID>`) and paste your FPL Draft league ID
+or league URL. Everything comes live from draft.premierleague.com:
+
+- **Overview** — standings with movement, W/D/L, points for/against and form;
+  an **all-play record** (your record if you played every team every week) and
+  a **luck** score (actual wins minus that); a league-position-by-gameweek chart
+  with any two teams highlighted; a points-per-gameweek heatmap; and season
+  records (highest/lowest score, biggest/closest win, luckiest manager…).
+- **Gameweek** — every H2H fixture for any gameweek; tap a current match to see
+  both line-ups with live player points. Top performers and the best unowned
+  scorers of the week. Auto-refreshes every 2 minutes while a gameweek is live.
+- **Squads** — each team's current 15 with points, form and injury news, plus a
+  squad-strength comparison.
+- **Transfers** — the full waiver / free-agent / trade feed, filterable by team.
+- **Draft & players** — draft steals and busts, draft grades, and the best free
+  agents by form or total points.
+
+The league ID is remembered in your browser and kept in the page link, so you
+can bookmark it or send it to the league. Don't have an ID handy? Enter
+`demo` (or use the link on that screen) for a sample league built from real
+players.
+
+Live scores are the sum of each team's starting XI and don't include
+automatic substitutions until FPL makes them.
+
 ## Requirements
 
 - [Node.js](https://nodejs.org/) 18+ (works on 20/22).
@@ -103,6 +131,9 @@ The dataset is generated (and reproducible) via `npm run gen-sample`.
 - React + TypeScript + Vite
 - No backend, no database — all draft state lives in your browser's
   `localStorage`.
+- FPL and FPL Draft APIs are relayed through same-origin proxies
+  (`vite.config.ts` in dev, `api/fpl` and `api/fpldraft` on Vercel) because they
+  don't send CORS headers.
 
 ## Notes / possible next steps
 
