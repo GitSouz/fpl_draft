@@ -279,6 +279,3 @@ function applySubs(picks: Pick[], subs: { element_in: number; element_out: numbe
   }
   return out;
 }
-
-/** Public FPL Draft API: player data only (used to build the demo league). */
-export const fetchBootstrap = () => get<Bootstrap>('bootstrap-static');

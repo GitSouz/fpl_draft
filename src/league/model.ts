@@ -1,5 +1,5 @@
 // Turns the raw API bundle into everything the dashboard shows. Pure functions,
-// no React — easy to reason about and to feed with demo data.
+// no React — easy to reason about and test.
 
 import { POS_BY_TYPE, type DraftElement, type LeagueBundle, type Pos } from './api';
 

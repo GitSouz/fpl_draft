@@ -8,8 +8,9 @@ import Dashboard from './league/Dashboard';
 
 type Mode = 'choose' | 'local' | 'online';
 
-// The league dashboard lives at #league (or any URL with ?league=<id>), so it
-// can be bookmarked and shared independently of the draft tools.
+// The league dashboard lives at #league so it can be bookmarked and shared
+// independently of the draft tools. (?league=… links from earlier still work;
+// the dashboard always shows the one fixed league.)
 const wantsDashboard = () =>
   window.location.hash === '#league' || new URLSearchParams(window.location.search).has('league');
 
