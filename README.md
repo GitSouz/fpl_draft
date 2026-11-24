@@ -56,9 +56,10 @@ local-only and unchanged.
 
 ## 📊 League dashboard
 
-Once the season's under way, open **League dashboard** from the menu (or go to
-`/#league`, or `/?league=<your league ID>`) and paste your FPL Draft league ID
-or league URL. Everything comes live from draft.premierleague.com:
+Once the season's under way, open **League dashboard** from the menu (or go
+to `/#league`). It's fixed to our league (ID **24630**, set in
+`src/league/Dashboard.tsx`) and everything comes live from
+draft.premierleague.com:
 
 - **Overview** — standings with movement, W/D/L, points for/against and form;
   an **all-play record** (your record if you played every team every week) and
@@ -73,11 +74,6 @@ or league URL. Everything comes live from draft.premierleague.com:
 - **Transfers** — the full waiver / free-agent / trade feed, filterable by team.
 - **Draft & players** — draft steals and busts, draft grades, and the best free
   agents by form or total points.
-
-The league ID is remembered in your browser and kept in the page link, so you
-can bookmark it or send it to the league. Don't have an ID handy? Enter
-`demo` (or use the link on that screen) for a sample league built from real
-players.
 
 Live scores are the sum of each team's starting XI and don't include
 automatic substitutions until FPL makes them.
