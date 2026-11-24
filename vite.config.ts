@@ -9,14 +9,18 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // FPL *Draft* API (league dashboard). Unlike the classic API it doesn't
-      // need a trailing slash. Must be listed before '/api/fpl' so that
+      // FPL *Draft* API (league dashboard), called as /api/fpldraft?path=<api path>
+      // to match the Vercel function (api/fpldraft.js). No trailing slash needed. Must be listed before '/api/fpl' so that
       // prefix doesn't swallow '/api/fpldraft'.
       '/api/fpldraft': {
         target: 'https://draft.premierleague.com',
         changeOrigin: true,
         secure: true,
-        rewrite: (path) => path.replace(/^\/api\/fpldraft/, '/api'),
+        // /api/fpldraft?path=league/1/details -> /api/league/1/details
+        rewrite: (path) => {
+          const q = new URLSearchParams(path.split('?')[1] ?? '').get('path') ?? '';
+          return `/api/${q.replace(/^\/+/, '')}`;
+        },
         headers: {
           'User-Agent':
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',

@@ -128,7 +128,8 @@ The dataset is generated (and reproducible) via `npm run gen-sample`.
 - No backend, no database — all draft state lives in your browser's
   `localStorage`.
 - FPL and FPL Draft APIs are relayed through same-origin proxies
-  (`vite.config.ts` in dev, `api/fpl` and `api/fpldraft` on Vercel) because they
+  (`vite.config.ts` in dev, `api/fpl/[...path].js` and `api/fpldraft.js` on
+  Vercel) because they
   don't send CORS headers.
 
 ## Notes / possible next steps
