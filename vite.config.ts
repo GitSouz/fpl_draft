@@ -9,6 +9,21 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
+      // FPL *Draft* API (league dashboard). Unlike the classic API it doesn't
+      // need a trailing slash. Must be listed before '/api/fpl' so that
+      // prefix doesn't swallow '/api/fpldraft'.
+      '/api/fpldraft': {
+        target: 'https://draft.premierleague.com',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api\/fpldraft/, '/api'),
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+          Accept: 'application/json, text/plain, */*',
+          Referer: 'https://draft.premierleague.com/',
+        },
+      },
       '/api/fpl': {
         target: 'https://fantasy.premierleague.com',
         changeOrigin: true,

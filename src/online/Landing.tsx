@@ -1,9 +1,10 @@
 interface Props {
   onLocal: () => void;
   onOnline: () => void;
+  onDashboard: () => void;
 }
 
-export default function Landing({ onLocal, onOnline }: Props) {
+export default function Landing({ onLocal, onOnline, onDashboard }: Props) {
   return (
     <div className="landing">
       <h1>⚽ FPL Snake Draft</h1>
@@ -23,6 +24,14 @@ export default function Landing({ onLocal, onOnline }: Props) {
           <span className="mode-desc">
             Create a room, share the code, and everyone drafts live from their
             own device — picks sync in real time.
+          </span>
+        </button>
+        <button className="mode-card" onClick={onDashboard}>
+          <span className="mode-emoji">📊</span>
+          <span className="mode-title">League dashboard</span>
+          <span className="mode-desc">
+            Season standings, form, luck, live scores, squads and waivers for
+            your FPL Draft mini league.
           </span>
         </button>
       </div>

@@ -9,9 +9,11 @@ interface Props {
   // Rendered above the app when online mode is available (lets the user switch
   // back to the mode chooser). Null in local-only builds.
   onBack?: () => void;
+  // Local-only builds: link to the league dashboard from the setup screen.
+  onDashboard?: () => void;
 }
 
-export default function LocalApp({ onBack }: Props) {
+export default function LocalApp({ onBack, onDashboard }: Props) {
   const [state, dispatch] = useReducer(reducer, undefined, loadState);
   const [players, setPlayers] = useState<Player[] | null>(null);
   const [demo, setDemo] = useState(false);
@@ -101,7 +103,11 @@ export default function LocalApp({ onBack }: Props) {
     <>
       {banner}
       {state.phase === 'setup' ? (
-        <Setup onStart={(managers) => dispatch({ type: 'START', managers })} onBack={onBack} />
+        <Setup
+          onStart={(managers) => dispatch({ type: 'START', managers })}
+          onBack={onBack}
+          onDashboard={onDashboard}
+        />
       ) : (
         <DraftRoom
           state={state}

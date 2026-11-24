@@ -6,9 +6,10 @@ const DEFAULT_MANAGERS = 4;
 interface Props {
   onStart: (managers: string[]) => void;
   onBack?: () => void;
+  onDashboard?: () => void;
 }
 
-export default function Setup({ onStart, onBack }: Props) {
+export default function Setup({ onStart, onBack, onDashboard }: Props) {
   const [names, setNames] = useState<string[]>(
     Array.from({ length: DEFAULT_MANAGERS }, () => '')
   );
@@ -130,6 +131,15 @@ export default function Setup({ onStart, onBack }: Props) {
         Start draft — {filled.length} manager{filled.length === 1 ? '' : 's'} ×{' '}
         {SQUAD_SIZE} rounds = {filled.length * SQUAD_SIZE} picks
       </button>
+
+      {onDashboard && (
+        <p className="muted center">
+          Season under way?{' '}
+          <button className="link-btn" onClick={onDashboard}>
+            📊 Open the league dashboard
+          </button>
+        </p>
+      )}
     </div>
   );
 }
