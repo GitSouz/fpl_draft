@@ -220,8 +220,12 @@ function LeaguePicker({ onPick, onBack }: { onPick: (id: string) => void; onBack
         </button>
       </form>
       <p className="muted small">
-        Find the ID on draft.premierleague.com: open your league, then look at the number in the page address (or under
-        League → Admin). It’s saved in this browser and in the link, so you can bookmark or share the page.
+        To find your league ID (a number, not the invite code): log in at draft.premierleague.com, then open{' '}
+        <a href="https://draft.premierleague.com/api/bootstrap-dynamic" target="_blank" rel="noreferrer">
+          draft.premierleague.com/api/bootstrap-dynamic
+        </a>{' '}
+        in the same browser and look for <code>"leagues"</code> — the <code>"id"</code> next to your league’s name is it.
+        It’s saved in this browser and in the link, so you can bookmark or share the page.
       </p>
       <button className="link-btn" onClick={() => onPick('demo')}>
         Just looking? Open the demo league
