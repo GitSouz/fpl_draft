@@ -1,6 +1,6 @@
 // Types and fetch helpers for the FPL *Draft* API (draft.premierleague.com),
 // reached through the same-origin /api/fpldraft proxy (see vite.config.ts and
-// api/fpldraft/[...path].js).
+// api/fpldraft.js).
 //
 // ID gotcha: a manager has TWO ids. `league_entries[].id` (the "league entry")
 // is what standings and H2H matches use; `league_entries[].entry_id` (the
@@ -168,15 +168,24 @@ export class DraftApiError extends Error {
 }
 
 async function get<T>(path: string): Promise<T> {
-  const res = await fetch(`/api/fpldraft/${path}`);
+  const res = await fetch(`/api/fpldraft?path=${encodeURIComponent(path)}`);
   if (res.status === 503) {
     throw new DraftApiError(
       'FPL Draft is updating right now (daily maintenance or between seasons). Try again shortly.',
       503
     );
   }
-  if (!res.ok) throw new DraftApiError(`FPL Draft API responded ${res.status} for ${path}`, res.status);
   const ct = res.headers.get('content-type') ?? '';
+  if (!res.ok) {
+    // A non-JSON error means our proxy (not FPL) answered — e.g. the Vercel
+    // function isn't deployed. Don't report that as "league not found".
+    if (!ct.includes('json')) {
+      throw new DraftApiError(
+        `Couldn’t reach the FPL Draft API through this site’s /api/fpldraft proxy (HTTP ${res.status}). Check the deployment includes api/fpldraft.js.`
+      );
+    }
+    throw new DraftApiError(`FPL Draft API responded ${res.status} for ${path}`, res.status);
+  }
   if (!ct.includes('json')) {
     throw new DraftApiError(
       'FPL Draft returned a non-JSON response — make sure the app is running via `npm run dev` or deployed with its /api proxy.'

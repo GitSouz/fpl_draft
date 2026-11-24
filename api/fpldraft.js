@@ -1,8 +1,12 @@
 // Vercel serverless function: proxies the FPL *Draft* API
-// (draft.premierleague.com) for the league dashboard, the same way
-// api/fpl/[...path].js proxies the classic FPL API. The browser calls
-// /api/fpldraft/... on the same origin and this relays it server-side, where
-// CORS doesn't apply. `npm run dev` uses the matching Vite proxy instead.
+// (draft.premierleague.com) for the league dashboard. The browser calls
+// /api/fpldraft?path=league/24630/details on the same origin and this relays
+// it server-side, where CORS doesn't apply. `npm run dev` uses the matching
+// Vite proxy instead.
+//
+// The FPL path travels as a query parameter (not /api/fpldraft/<path>) on
+// purpose: outside Next.js, Vercel's [...path] catch-all only matches
+// single-segment paths, so multi-segment ones like league/<id>/details 404.
 
 const BROWSER_HEADERS = {
   'User-Agent':
@@ -15,21 +19,13 @@ const BROWSER_HEADERS = {
 
 export default async function handler(req, res) {
   try {
-    const parts = req.query && req.query.path;
-    let path = Array.isArray(parts)
-      ? parts.join('/')
-      : typeof parts === 'string'
-        ? parts
-        : '';
-    if (!path) {
-      path = String(req.url || '')
-        .split('?')[0]
-        .replace(/^\/api\/fpldraft\/?/, '');
-    }
-    path = path.replace(/^\/+/, '').replace(/\/+$/, '');
+    const q = req.query && req.query.path;
+    const path = String(Array.isArray(q) ? q[0] : q || '')
+      .replace(/^\/+/, '')
+      .replace(/\/+$/, '');
 
     // Only relay simple API paths (letters, digits, slashes, dashes).
-    if (!/^[a-z0-9\-/]+$/i.test(path)) {
+    if (!path || !/^[a-z0-9\-/]+$/i.test(path)) {
       res.status(400).json({ error: 'Bad path' });
       return;
     }
